@@ -1,5 +1,6 @@
-from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5 import QtCore, QtGui, QtWidgets 
 import iconify  as ico
+from PyQt5.QtWidgets import QApplication , QRadioButton , QWidget
 # from iconify.qt import QtGui, QtWidgets
 # from pyside2 import QtWidgets
 import main
@@ -17,7 +18,9 @@ class MyQtApp(main.Ui_MainWindow,QtWidgets.QMainWindow ):
         self.setupUi(self)
         self.showMaximized()
         self.setWindowTitle("MY GUI")
+        self.icon_setting()
         self.populate_tree_widget()
+        self.radio1.toggled.connect(lambda:self.bgcolor())
 
     def populate_tree_widget(self):
         self.tableWidget.setColumnWidth(0,100)
@@ -29,15 +32,14 @@ class MyQtApp(main.Ui_MainWindow,QtWidgets.QMainWindow ):
         self.load_data()
 
     def load_data(self):
-        people = [{"no " : "1" , "name" : "resister" , "Description " : "used to resist the current " } ,
+        people = [{"no " : "1" , "name" : "resister" , "Description " : "used to resist the current "  ,} ,
         {"no " : "2","name" : "force" , "Description " : "NA "},
         {"no " : "3","name" : "voltage" , "Description " : "NA "},
         {"no " : "4","name" : "capactor" , "Description " : "NA "},
         {"no " : "5","name" : "inside" , "Description " : "NA "},
         {"no " : "6","name" : "netural" , "Description " : "NA "},
         {"no " : "7","name" : "postive" , "Description " : "NA "}]
-
-                    
+        
                 
         row = 0
         self.tableWidget.setRowCount(len(people))
@@ -48,12 +50,16 @@ class MyQtApp(main.Ui_MainWindow,QtWidgets.QMainWindow ):
             row = row+1
             self.size_increase()
     def size_increase(self):
-        self.setStyleSheet("QTabBar::tab { height: 30px; width: 70px; background: 'yellow'}") 
+        self.setStyleSheet("QTabBar::tab { height: 30px; width: 100px; background: 'yellow'}") 
         height = 600
         width = 1100
         self.setFixedHeight(height)
         self.setFixedWidth(width)
         self.frameGeometry().width()
+    
+    def bgcolor(self):
+        pass
+        
 
     def icon_setting(self):
         # icon = ico.Icon('feather:loader',color=QtGui.QColor('salmon'),anim =anim)
@@ -62,6 +68,7 @@ class MyQtApp(main.Ui_MainWindow,QtWidgets.QMainWindow ):
         # button = QpushButton 
         # anim.start()     
         pass
+        
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
     qt_app = MyQtApp()
