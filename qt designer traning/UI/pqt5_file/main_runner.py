@@ -32,7 +32,14 @@ class MyQtApp(main.Ui_MainWindow,QtWidgets.QMainWindow):
             self.tableWidget.setItem(row, 1 , QtWidgets.QTableWidgetItem(person["name"]))
             self.tableWidget.setItem(row, 2 , QtWidgets.QTableWidgetItem(person["Description "]))
             row = row+1
-            
+            self.size_increase()
+    def size_increase(self):
+        self.setStyleSheet("QTabBar::tab { height: 30px; width: 70px; background: 'yellow'}") 
+        height = 600
+        width = 1100
+        self.setFixedHeight(height)
+        self.setFixedWidth(width)
+        self.frameGeometry().width()       
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
     qt_app = MyQtApp()
