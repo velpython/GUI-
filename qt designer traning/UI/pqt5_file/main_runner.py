@@ -1,19 +1,23 @@
-from PyQt5 import QtCore, QtGui, QtWidgets 
+from PyQt5 import QtCore, QtGui, QtWidgets , QtSerialPort  
 from PyQt5.QtCore import pyqtSlot
+from PyQt5.uic import loadUi
+# from PyQt5.QtGui import Qpixmap
 import iconify  as ico
 import csv
 import os
 import datetime as dt
 import pandas as pd
-from PyQt5.QtWidgets import qApp, QAction 
+from PyQt5.QtWidgets import qApp, QAction , QSplashScreen
 from PyQt5.QtWidgets import QApplication , QRadioButton , QWidget , QPushButton , QHBoxLayout , QFileDialog , QLineEdit , QTableWidgetItem ,QTableWidget
+from PyQt5.QtSerialPort import QSerialPort, QSerialPortInfo
+import serial
 # from iconify.qt import QtGui, QtWidgets
 # from pyside2 import QtWidgets
 import main
 import sys
 import os 
 
-class MyQtApp(main.Ui_MainWindow,QtWidgets.QMainWindow , QTableWidget):
+class MyQtApp(main.Ui_MainWindow,QtWidgets.QMainWindow , QTableWidget , QSplashScreen):
     def __init__(self):
         super(MyQtApp,self).__init__()
         self.setupUi(self)
@@ -33,7 +37,7 @@ class MyQtApp(main.Ui_MainWindow,QtWidgets.QMainWindow , QTableWidget):
         self.pushButton_4.clicked.connect(self.pass_fail_check)
         self.pushButton_11.clicked.connect(self.Q_limit_check)
         self.pushButton_4.clicked.connect(self.show_result)
-
+        self.pushButton_2.clicked.connect(self.combo_com)
         self.load_data()
 
     def populate_tree_widget(self):
@@ -189,10 +193,10 @@ class MyQtApp(main.Ui_MainWindow,QtWidgets.QMainWindow , QTableWidget):
                 self.labelg.setText("not selected")
        else:
             return None
-        
 
-    def check_Bo_changed(self):
-        pass
+    def combo_com(self):
+        self.comboBox.addItems([ port.portName() for port in QSerialPortInfo().availablePorts() ])
+    
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
     qt_app = MyQtApp()
