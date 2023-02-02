@@ -12,6 +12,7 @@ class Ui_MainWindow(object):
 
         MainWindow.resize(626, 392)
         
+        
         # create main window 
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         # self.centralwidget.setGeometry(QtCore.QRect(0, 0, 1500, 800))
@@ -62,7 +63,7 @@ class Ui_MainWindow(object):
         # created the progressBar for saving code
         self.progressBar = QtWidgets.QProgressBar(self.Main_Board)
         self.progressBar.setGeometry(QtCore.QRect(10, 700, 200, 50))
-        self.progressBar.setProperty("value", 24)
+        self.progressBar.setProperty("value", 0)
         # setting and rising up the mainWindow
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)

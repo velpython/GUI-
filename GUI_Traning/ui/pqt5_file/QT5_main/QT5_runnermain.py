@@ -1,6 +1,7 @@
 from PyQt5 import QtCore, QtGui, QtWidgets , QtSerialPort  
-from PyQt5.QtCore import pyqtSlot
+from PyQt5.QtGui import QPixmap
 from PyQt5.uic import loadUi
+import datetime
 import iconify  as ico
 import csv
 import os
@@ -37,6 +38,9 @@ class MyQtApp(QT5_main.Ui_MainWindow,QtWidgets.QMainWindow , QTableWidget , QSpl
         df = self.open_file(file_path =  r"D:\\Qt GUI\\GUI_Traning\\ui\pqt5_file\\QT5_main\\Bookdata.xls")
         self.import_datalog(df)
         self.add_checkbox(df, column=3)
+        self.force_handling(df,column = 5)
+        self.pushButton_check.clicked.connect(self.check_result)
+        self.pushButton_savetab1.clicked.connect(self.save_sheet1)
         
 
     def open_file(self , file_path):
@@ -72,24 +76,18 @@ class MyQtApp(QT5_main.Ui_MainWindow,QtWidgets.QMainWindow , QTableWidget , QSpl
         for i, val in enumerate(column_data):
             checkbox = QCheckBox()
         # Check if the value is equal to the target value
-            if val == "__ Meas Voltage":
+            if val == " __checkBox":
             # Add a checkbox to the table widget in the same row and column
-                # self.Main_Board.setCellWidget(i, column - 1, None)
-                self.Main_Board.setCellWidget(i, column - 1, checkbox)
-            if val == "__ Force voltage":
-                self.Main_Board.setCellWidget(i, column - 1, checkbox)
-            if val == "__ Meas res":
-                self.Main_Board.setCellWidget(i, column - 1, checkbox)
-            if val == "__ Force current":
-                self.Main_Board.setCellWidget(i, column - 1, checkbox)
-            if val == "__ Meas current":
-                self.Main_Board.setCellWidget(i, column - 1, checkbox)
-            if val == "__ Meas cap":
-                self.Main_Board.setCellWidget(i, column - 1, checkbox)
-            if val == "__ Meas vth":
-                self.Main_Board.setCellWidget(i, column - 1, checkbox)
+                self.Main_Board.setCellWidget(i, column-1, checkbox)
+                # self.Main_Board.setObjectName("yellow")
 
-                
+    def force_handling(self, df , column):
+        column_data = df.iloc[:, column - 1]
+        for i, val in enumerate(column_data):
+            Spin_Box = QtWidgets.QSpinBox()
+            if val == "set_limit":
+                self.Main_Board.setCellWidget(i, column - 1, Spin_Box)
+
     def combo_com(self):
         self.comboBox_Com.addItems([ port.portName() for port in QSerialPortInfo().availablePorts() ])
 
@@ -102,10 +100,21 @@ class MyQtApp(QT5_main.Ui_MainWindow,QtWidgets.QMainWindow , QTableWidget , QSpl
     def mouseMoveEvent(self, event):
         if self.mouse_buttons == Qt.RightButton:
             self.resize(event.x(), event.y())
+
     
-    def insert_checkBox(self , df):
-      pass
-    
+    def save_sheet1(self):
+        # Create a pixmap from the main window
+        pixmap = QPixmap(self.size())
+
+        # Render the main window onto the pixmap
+        self.render(pixmap)
+         # ADDED data and time to file_namee
+        now = datetime.datetime.now()
+        self.timestamp = now.strftime("%Y-%m-%d_%H-%M-%S")
+
+        # Save the pixmap to a file
+        pixmap.save("screenshot_tab_1" + self.timestamp + ".png")
+
     def save_sheet_2(self):
   
         path = QFileDialog.getSaveFileName(self, 'Save CSV', os.getenv('HOME'), 'CSV(*.csv)')
@@ -126,9 +135,7 @@ class MyQtApp(QT5_main.Ui_MainWindow,QtWidgets.QMainWindow , QTableWidget , QSpl
                             else:
                                 row_data.append('')
                         writer.writerow(row_data)
-    
 
-   
 if __name__ == "__main__":
     
     app = QtWidgets.QApplication(sys.argv)
