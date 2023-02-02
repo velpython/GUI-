@@ -71,15 +71,25 @@ class MyQtApp(QT5_main.Ui_MainWindow,QtWidgets.QMainWindow , QTableWidget , QSpl
         # Loop through all values in the column
         for i, val in enumerate(column_data):
             checkbox = QCheckBox()
-            # _translate = QtCore.QCoreApplication.translate
         # Check if the value is equal to the target value
-            if val == "__Measure Voltage":
+            if val == "__ Meas Voltage":
             # Add a checkbox to the table widget in the same row and column
-                self.Main_Board.setCellWidget(i, column - 1, None)
-                # checkbox.setObjectName(f"checkbox_{i}")
+                # self.Main_Board.setCellWidget(i, column - 1, None)
                 self.Main_Board.setCellWidget(i, column - 1, checkbox)
-                # checkbox.setText("volatge")
+            if val == "__ Force voltage":
+                self.Main_Board.setCellWidget(i, column - 1, checkbox)
+            if val == "__ Meas res":
+                self.Main_Board.setCellWidget(i, column - 1, checkbox)
+            if val == "__ Force current":
+                self.Main_Board.setCellWidget(i, column - 1, checkbox)
+            if val == "__ Meas current":
+                self.Main_Board.setCellWidget(i, column - 1, checkbox)
+            if val == "__ Meas cap":
+                self.Main_Board.setCellWidget(i, column - 1, checkbox)
+            if val == "__ Meas vth":
+                self.Main_Board.setCellWidget(i, column - 1, checkbox)
 
+                
     def combo_com(self):
         self.comboBox_Com.addItems([ port.portName() for port in QSerialPortInfo().availablePorts() ])
 
