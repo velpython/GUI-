@@ -23,16 +23,17 @@ class MyQtApp(QT5_main.Ui_MainWindow,QtWidgets.QMainWindow , QTableWidget , QSpl
         self.setupUi(self)
         self.showMaximized()
         self.setWindowTitle("MY GUI")
-        self.open_file_csv()
-        self.fixed_window_size(height= 900 , width= 1500)
+        self.import_datalog()
         self.pushButton_savetab2.clicked.connect(self.save_sheet_2)
-        self.open_file_csv()
         self.pushButton_check.clicked.connect(self.combo_com)
-        self.pushButton_clear.clicked.connect(self.combo_clear)       
-        self.resize(400, 300)
-        self.drag_position = None
- 
-    def open_file_csv(self):
+        self.pushButton_clear.clicked.connect(self.combo_clear)      
+        # init for set windowsizze combo 
+        self.setWindowTitle("MY GUI")
+        self.resize(1500, 900)
+        self.setMouseTracking(True)
+        self.mouse_buttons = Qt.NoButton
+
+    def import_datalog(self):
 
         df = pd.read_excel(r"D:\\QT GUI\\GUI_Traning\\ui\pqt5_file\\QT5_main\\Bookdata.xls")        
         rows = df.shape[0]
@@ -48,11 +49,19 @@ class MyQtApp(QT5_main.Ui_MainWindow,QtWidgets.QMainWindow , QTableWidget , QSpl
                 item = QTableWidgetItem(str(df.iloc[i, j]))
                 self.Main_Board.setItem(i, j, item)
     
-    def fixed_window_size(self , width , height):
-        self.height = height
-        self.width = width
-        self.setFixedWidth(width)
-        self.setFixedHeight(height)
+    def combo_com(self):
+        self.comboBox_Com.addItems([ port.portName() for port in QSerialPortInfo().availablePorts() ])
+
+    def combo_clear(self):
+        self.comboBox_Com.clear()
+    
+    def mousePressEvent(self, event):
+        self.mouse_buttons = event.buttons()
+
+    def mouseMoveEvent(self, event):
+        if self.mouse_buttons == Qt.RightButton:
+            self.resize(event.x(), event.y())
+
     
     def save_sheet_2(self):
   
@@ -75,18 +84,12 @@ class MyQtApp(QT5_main.Ui_MainWindow,QtWidgets.QMainWindow , QTableWidget , QSpl
                                 row_data.append('')
                         writer.writerow(row_data)
 
-
-    def combo_com(self):
-        self.comboBox_Com.addItems([ port.portName() for port in QSerialPortInfo().availablePorts() ])
-
-    def combo_clear(self):
-        self.comboBox_Com.clear()
+    
     
 
    
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
-    # InputFilepath = "D:\\QT GUI\\GUI_Traning\\ui\pqt5_file\\QT5_main\\Bookdata.xls"
     qt_app = MyQtApp()
     qt_app.show()
     anim = ico.anim.Spin()
