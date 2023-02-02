@@ -7,7 +7,7 @@ import os
 import datetime as dt
 import pandas as pd
 from PyQt5.QtWidgets import qApp, QAction , QSplashScreen
-from PyQt5.QtWidgets import QApplication , QRadioButton , QWidget , QPushButton , QHBoxLayout , QFileDialog , QLineEdit , QTableWidgetItem ,QTableWidget, QMainWindow , QTableView
+from PyQt5.QtWidgets import QApplication , QRadioButton , QWidget , QPushButton , QHBoxLayout , QFileDialog , QCheckBox , QTableWidgetItem ,QTableWidget, QMainWindow , QTableView
 from PyQt5.QtSerialPort import QSerialPort, QSerialPortInfo
 import serial
 from PyQt5.QtCore import Qt
@@ -21,34 +21,65 @@ class MyQtApp(QT5_main.Ui_MainWindow,QtWidgets.QMainWindow , QTableWidget , QSpl
     def __init__(self):
         super(MyQtApp,self).__init__()
         self.setupUi(self)
-        self.showMaximized()
-        self.setWindowTitle("MY GUI")
-        self.import_datalog()
-        self.pushButton_savetab2.clicked.connect(self.save_sheet_2)
-        self.pushButton_check.clicked.connect(self.combo_com)
-        self.pushButton_clear.clicked.connect(self.combo_clear)      
-        # init for set windowsizze combo 
+        # self.import_datalog()
+          
+        # init the set windowsizze combo 
         self.setWindowTitle("MY GUI")
         self.resize(1500, 900)
         self.setMouseTracking(True)
         self.mouse_buttons = Qt.NoButton
+        # assign's clicked functions 
 
-    def import_datalog(self):
+        self.pushButton_savetab2.clicked.connect(self.save_sheet_2)
+        self.pushButton_check.clicked.connect(self.combo_com)
+        self.pushButton_clear.clicked.connect(self.combo_clear)   
+        # passing file path        
+        df = self.open_file(file_path =  r"D:\\Qt GUI\\GUI_Traning\\ui\pqt5_file\\QT5_main\\Bookdata.xls")
+        self.import_datalog(df)
+        self.add_checkbox(df, column=3)
+        
 
-        df = pd.read_excel(r"D:\\QT GUI\\GUI_Traning\\ui\pqt5_file\\QT5_main\\Bookdata.xls")        
-        rows = df.shape[0]
-        columns = df.shape[1]
-        self.Main_Board.setRowCount(rows)
-        self.Main_Board.setColumnCount(columns)        
-        # Set the table header
-        header = df.columns.tolist()
-        self.Main_Board.setHorizontalHeaderLabels(header)        
-        # Insert data into the table
-        for i in range(rows):
-            for j in range(columns):
-                item = QTableWidgetItem(str(df.iloc[i, j]))
-                self.Main_Board.setItem(i, j, item)
-    
+    def open_file(self , file_path):
+        try:
+            df = pd.read_excel(file_path)
+            return df
+
+        except Exception as e:
+            print("error founded in file opening")
+
+    def import_datalog(self , df):   
+        try:      
+            rows = df.shape[0]
+            columns = df.shape[1]
+            self.Main_Board.setRowCount(rows)
+            self.Main_Board.setColumnCount(columns)        
+            # Set the table header
+            header = df.columns.tolist()
+            self.Main_Board.setHorizontalHeaderLabels(header)        
+            # Insert data into the table
+            for i in range(rows):
+                for j in range(columns):
+                    item = QTableWidgetItem(str(df.iloc[i, j]))
+                    self.Main_Board.setItem(i, j, item)      
+            return df     
+        except Exception as e:
+            print("Error :", e)
+
+    def add_checkbox(self , df , column):
+
+        column_data = df.iloc[:, column - 1]
+        # Loop through all values in the column
+        for i, val in enumerate(column_data):
+            checkbox = QCheckBox()
+            # _translate = QtCore.QCoreApplication.translate
+        # Check if the value is equal to the target value
+            if val == "__Measure Voltage":
+            # Add a checkbox to the table widget in the same row and column
+                self.Main_Board.setCellWidget(i, column - 1, None)
+                # checkbox.setObjectName(f"checkbox_{i}")
+                self.Main_Board.setCellWidget(i, column - 1, checkbox)
+                # checkbox.setText("volatge")
+
     def combo_com(self):
         self.comboBox_Com.addItems([ port.portName() for port in QSerialPortInfo().availablePorts() ])
 
@@ -61,7 +92,9 @@ class MyQtApp(QT5_main.Ui_MainWindow,QtWidgets.QMainWindow , QTableWidget , QSpl
     def mouseMoveEvent(self, event):
         if self.mouse_buttons == Qt.RightButton:
             self.resize(event.x(), event.y())
-
+    
+    def insert_checkBox(self , df):
+      pass
     
     def save_sheet_2(self):
   
@@ -83,12 +116,11 @@ class MyQtApp(QT5_main.Ui_MainWindow,QtWidgets.QMainWindow , QTableWidget , QSpl
                             else:
                                 row_data.append('')
                         writer.writerow(row_data)
-
-    
     
 
    
 if __name__ == "__main__":
+    
     app = QtWidgets.QApplication(sys.argv)
     qt_app = MyQtApp()
     qt_app.show()
